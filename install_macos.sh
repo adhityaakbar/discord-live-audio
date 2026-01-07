@@ -19,8 +19,12 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 echo "Menginstal atau memperbarui portaudio..."
 brew install portaudio
 
-# Membuat lingkungan virtual
-echo "Membuat lingkungan virtual di '$VENV_DIR'..."
+# Hapus lingkungan virtual lama untuk memastikan instalasi bersih
+echo "Menghapus lingkungan virtual lama (jika ada)..."
+rm -rf $VENV_DIR
+
+# Membuat lingkungan virtual baru
+echo "Membuat lingkungan virtual baru di '$VENV_DIR'..."
 python3 -m venv $VENV_DIR
 
 # Menginstal dependensi Python ke dalam lingkungan virtual, mengabaikan cache
