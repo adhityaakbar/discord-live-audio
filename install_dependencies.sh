@@ -19,9 +19,9 @@ sudo apt-get install -y python3-pip python3-venv
 echo "Membuat lingkungan virtual di '$VENV_DIR'..."
 python3 -m venv $VENV_DIR
 
-# Menginstal dependensi Python ke dalam lingkungan virtual
-echo "Menginstal dependensi Python dari requirements.txt ke dalam $VENV_DIR..."
-$VENV_DIR/bin/pip install -r requirements.txt
+# Menginstal dependensi Python ke dalam lingkungan virtual, mengabaikan cache
+echo "Menginstal dependensi Python dari requirements.txt (tanpa cache)..."
+$VENV_DIR/bin/pip install --no-cache-dir -r requirements.txt
 
 echo "Instalasi semua dependensi selesai!"
 echo ""
