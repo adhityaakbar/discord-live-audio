@@ -4,3 +4,4 @@ PyNaCl
 # Di sistem berbasis Debian (seperti Raspberry Pi OS), jalankan:
 # sudo apt-get install portaudio19-dev
 PyAudio
+python-dotenv

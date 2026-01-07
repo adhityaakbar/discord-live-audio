@@ -3,10 +3,14 @@ from discord.ext import commands
 import pyaudio
 import threading
 import time
+import os
+from dotenv import load_dotenv
+
+load_dotenv() # Muat variabel lingkungan dari file .env
 
 # --- Konfigurasi ---
-BOT_TOKEN = "YOUR_DISCORD_BOT_TOKEN"
-VOICE_CHANNEL_NAME = "General"
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+VOICE_CHANNEL_NAME = os.getenv("VOICE_CHANNEL_NAME", "General") # Default ke "General" jika tidak disetel
 # ------------------
 
 # --- Konfigurasi Audio ---
@@ -112,9 +116,10 @@ async def stop(ctx):
 
 
 if __name__ == "__main__":
-    if BOT_TOKEN == "YOUR_DISCORD_BOT_TOKEN":
-        print("Kesalahan: Anda belum mengatur token bot Anda.")
-        print("Silakan buka file main.py dan ganti 'YOUR_DISCORD_BOT_TOKEN' dengan token bot Anda.")
+    if BOT_TOKEN is None:
+        print("Kesalahan: Token bot tidak ditemukan.")
+        print("Harap buat file .env di direktori yang sama dengan main.py")
+        print("dan tambahkan BOT_TOKEN=YOUR_DISCORD_BOT_TOKEN ke dalamnya.")
     else:
         try:
             bot.run(BOT_TOKEN)
