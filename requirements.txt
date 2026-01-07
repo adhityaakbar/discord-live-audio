@@ -1,4 +1,4 @@
-discord.py
+discord.py==1.7.3
 PyNaCl
 # Untuk audio, PyAudio mungkin memerlukan instalasi manual dari dependensi sistem.
 # Di sistem berbasis Debian (seperti Raspberry Pi OS), jalankan:
