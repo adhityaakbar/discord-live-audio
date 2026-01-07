@@ -38,7 +38,7 @@ class MicrophoneAudioSource(discord.AudioSource):
         self.stream.stop_stream()
         self.stream.close()
 
-class AudioPlayer(discord.reader.AudioSink):
+class AudioPlayer(discord.sinks.Sink):
     def __init__(self):
         self.p = pyaudio.PyAudio()
         self.stream = self.p.open(format=FORMAT,
@@ -62,9 +62,9 @@ class AudioPlayer(discord.reader.AudioSink):
                 else:
                     time.sleep(0.01) # Hindari busy-waiting
 
-    def write(self, data):
+    def write(self, user, data):
         with self.lock:
-            self.buffer += data.data
+            self.buffer += data.pcm
 
     def cleanup(self):
         self.playing = False

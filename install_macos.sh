@@ -1,10 +1,18 @@
 #!/bin/bash
 
+# Pilih interpreter Python: utamakan python3.12, jika tidak ada, gunakan python3
+if command -v python3.12 &> /dev/null; then
+    PYTHON_CMD="python3.12"
+else
+    PYTHON_CMD="python3"
+fi
+echo "Menggunakan interpreter Python: $PYTHON_CMD"
+
 VENV_DIR="venv"
 
 echo "Memulai instalasi dependensi untuk macOS..."
 
-# Cek apakah Homebrew sudah terinstal, jika tidak, instal
+# Cek apakah Homebrew sudah terinstal
 if ! command -v brew &> /dev/null; then
     echo "Homebrew tidak ditemukan. Menginstal Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -19,15 +27,15 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 echo "Menginstal atau memperbarui portaudio..."
 brew install portaudio
 
-# Hapus lingkungan virtual lama untuk memastikan instalasi bersih
+# Hapus lingkungan virtual lama
 echo "Menghapus lingkungan virtual lama (jika ada)..."
 rm -rf $VENV_DIR
 
 # Membuat lingkungan virtual baru
-echo "Membuat lingkungan virtual baru di '$VENV_DIR'..."
-python3 -m venv $VENV_DIR
+echo "Membuat lingkungan virtual baru di '$VENV_DIR' menggunakan $PYTHON_CMD..."
+$PYTHON_CMD -m venv $VENV_DIR
 
-# Menginstal dependensi Python ke dalam lingkungan virtual, mengabaikan cache
+# Menginstal dependensi Python
 echo "Menginstal dependensi Python dari requirements.txt (tanpa cache)..."
 $VENV_DIR/bin/pip install --no-cache-dir -r requirements.txt
 
@@ -37,4 +45,4 @@ echo "PENTING: Untuk menjalankan bot, Anda harus mengaktifkan lingkungan virtual
 echo "Jalankan perintah berikut:"
 echo "source $VENV_DIR/bin/activate"
 echo "Setelah itu, jalankan bot dengan:"
-echo "python3 main.py"
+echo "$PYTHON_CMD main.py"
