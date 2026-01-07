@@ -1,5 +1,7 @@
 #!/bin/bash
 
+VENV_DIR="venv"
+
 echo "Memulai instalasi dependensi untuk macOS..."
 
 # Cek apakah Homebrew sudah terinstal, jika tidak, instal
@@ -10,16 +12,25 @@ else
     echo "Homebrew sudah terinstal."
 fi
 
-# Pastikan Homebrew ada di PATH (penting untuk shell non-interaktif)
+# Pastikan Homebrew ada di PATH
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Instal portaudio
 echo "Menginstal atau memperbarui portaudio..."
 brew install portaudio
 
-# Instal dependensi Python
-echo "Menginstal dependensi Python dari requirements.txt..."
-pip3 install -r requirements.txt
+# Membuat lingkungan virtual
+echo "Membuat lingkungan virtual di '$VENV_DIR'..."
+python3 -m venv $VENV_DIR
+
+# Menginstal dependensi Python ke dalam lingkungan virtual
+echo "Menginstal dependensi Python dari requirements.txt ke dalam $VENV_DIR..."
+$VENV_DIR/bin/pip install -r requirements.txt
 
 echo "Instalasi semua dependensi untuk macOS selesai!"
-echo "Anda sekarang dapat menjalankan bot dengan 'python3 main.py'"
+echo ""
+echo "PENTING: Untuk menjalankan bot, Anda harus mengaktifkan lingkungan virtual terlebih dahulu."
+echo "Jalankan perintah berikut:"
+echo "source $VENV_DIR/bin/activate"
+echo "Setelah itu, jalankan bot dengan:"
+echo "python3 main.py"
