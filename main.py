@@ -32,13 +32,13 @@ class MicrophoneAudioSource(discord.AudioSource):
         self.stream = stream
 
     def read(self):
-        return self.stream.read(CHUNK)
+        return self.stream.read(CHUNK, exception_on_overflow=False)
 
     def cleanup(self):
         self.stream.stop_stream()
         self.stream.close()
 
-class AudioPlayer(discord.reader.AudioSink):
+class AudioPlayer(discord.sinks.Sink):
     def __init__(self):
         self.p = pyaudio.PyAudio()
         self.stream = self.p.open(format=FORMAT,
@@ -62,9 +62,9 @@ class AudioPlayer(discord.reader.AudioSink):
                 else:
                     time.sleep(0.01) # Hindari busy-waiting
 
-    def write(self, data):
+    def write(self, user, data):
         with self.lock:
-            self.buffer += data.data
+            self.buffer += data.pcm
 
     def cleanup(self):
         self.playing = False
@@ -89,6 +89,7 @@ async def on_ready():
             
             # Setup output sink (speaker)
             player_sink = AudioPlayer()
+            vc.my_sink = player_sink # Attach sink to voice client for later access
 
             # Mulai mengirim audio dari mikrofon dan menerima audio
             vc.play(microphone_source, after=lambda e: print('Player error: %s' % e) if e else None)
@@ -106,10 +107,12 @@ async def stop(ctx):
     """Stops and disconnects the bot from voice"""
     if ctx.voice_client:
         # Hentikan dan bersihkan sumber audio dan sink
+        ctx.voice_client.stop_listening()
+        ctx.voice_client.stop()
         if ctx.voice_client.source:
             ctx.voice_client.source.cleanup()
-        if hasattr(ctx.voice_client, 'player') and ctx.voice_client.player:
-             ctx.voice_client.player.cleanup()
+        if hasattr(ctx.voice_client, 'my_sink'):
+             ctx.voice_client.my_sink.cleanup()
 
         await ctx.voice_client.disconnect()
         print("Bot telah dihentikan dan koneksi ditutup.")
